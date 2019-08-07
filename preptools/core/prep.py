@@ -185,7 +185,7 @@ def create_reader(url: str, nid: int) -> PRepToolsReader:
     return PRepToolsReader(icon_service, nid)
 
 
-def create_writer_by_args(args) -> PRepToolsWriter:
+def create_writer_by_args(args) -> (PRepToolsWriter, KeyWallet):
     url, nid, keystore_path = _get_common_args(args)
     password: str = args.password
     yes: bool = False
@@ -196,15 +196,15 @@ def create_writer_by_args(args) -> PRepToolsWriter:
     if password is None:
         password = getpass.getpass("> Password: ")
 
-    writer = create_writer(url, nid, keystore_path, password)
+    writer, wallet = create_writer(url, nid, keystore_path, password)
 
     callback = functools.partial(_confirm_callback, yes=yes)
     writer.set_on_send_request(callback)
 
-    return writer
+    return writer, wallet
 
 
-def create_writer(url: str, nid: int, keystore_path: str, password: str) -> PRepToolsWriter:
+def create_writer(url: str, nid: int, keystore_path: str, password: str) -> (PRepToolsWriter, KeyWallet):
     url: str = get_url(url)
     icon_service = IconService(HTTPProvider(url))
 
@@ -214,7 +214,7 @@ def create_writer(url: str, nid: int, keystore_path: str, password: str) -> PRep
         print(e.args[0])
         sys.exit(1)
 
-    return PRepToolsWriter(icon_service, nid, owner_wallet)
+    return PRepToolsWriter(icon_service, nid, owner_wallet), owner_wallet
 
 
 def create_icon_service(url: str) -> IconService:

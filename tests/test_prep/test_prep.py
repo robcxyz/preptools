@@ -52,13 +52,13 @@ class TestPRep(unittest.TestCase):
         with open(TEST_REGISTER_JSON_PATH) as register:
             params = json.load(register)
 
-        writer = create_writer_by_args(self.args)
+        writer, _ = create_writer_by_args(self.args)
         response = writer.register_prep(params)
         print(response)
         self.assertFalse(response.get('error', False))
 
     def test_unregister_prep(self):
-        writer = create_writer_by_args(self.args)
+        writer, _ = create_writer_by_args(self.args)
         response = writer.unregister_prep()
         print(response)
         self.assertFalse(response.get('error', False))
@@ -67,7 +67,7 @@ class TestPRep(unittest.TestCase):
         with open(TEST_SET_JSON_PATH) as register:
             params = json.load(register)
 
-        writer = create_writer_by_args(self.args)
+        writer, _ = create_writer_by_args(self.args)
         response = writer.set_prep(params)
         print(response)
         self.assertFalse(response.get('error', False))
@@ -75,7 +75,7 @@ class TestPRep(unittest.TestCase):
     def test_governance_variables(self):
         irep = "0x0x21e19e0c9bab2400000"
         params = {'irep': irep}
-        writer = create_writer_by_args(self.args)
+        writer, _ = create_writer_by_args(self.args)
         response = writer.set_governance_variables(params)
         self.assertFalse(response.get('error', False))
 

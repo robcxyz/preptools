@@ -17,6 +17,8 @@ import argparse
 import json
 import sys
 
+from iconsdk.utils.convert_type import convert_bytes_to_hex_str
+
 from preptools.core.prep import create_writer_by_args
 from preptools.exception import InvalidFormatException
 from preptools.utils.constants import fields_to_validate
@@ -122,7 +124,9 @@ def _register_prep(args) -> str:
 
     _get_prep_dict_from_cli(params)
 
-    writer = create_writer_by_args(args)
+    writer, wallet = create_writer_by_args(args)
+    params['publicKey'] = convert_bytes_to_hex_str(wallet.bytes_public_key)
+
     response = writer.register_prep(params)
 
     return response
@@ -191,7 +195,7 @@ def _init_for_unregister_prep(sub_parser, common_parent_parser, tx_parent_parser
 
 
 def _unregister_prep(args) -> str:
-    writer = create_writer_by_args(args)
+    writer, _ = create_writer_by_args(args)
     response = writer.unregister_prep()
 
     return response
@@ -290,7 +294,7 @@ def _set_prep(args) -> str:
     if args.interactive:
         _get_prep_dict_from_cli(params, set_prep=True)
 
-    writer = create_writer_by_args(args)
+    writer, _ = create_writer_by_args(args)
     response = writer.set_prep(params)
 
     return response
@@ -320,7 +324,7 @@ def _set_governance_variables(args) -> str:
     params = {
         'irep': args.irep
     }
-    writer = create_writer_by_args(args)
+    writer, _ = create_writer_by_args(args)
     response = writer.set_governance_variables(params)
 
     return response
